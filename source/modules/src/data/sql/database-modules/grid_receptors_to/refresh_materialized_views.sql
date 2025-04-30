@@ -1,1 +1,2 @@
-REFRESH MATERIALIZED VIEW receptors_to_relevant_habitats;
+-- Refresh materialized view
+BEGIN; REFRESH MATERIALIZED VIEW receptors_to_relevant_habitats; COMMIT;

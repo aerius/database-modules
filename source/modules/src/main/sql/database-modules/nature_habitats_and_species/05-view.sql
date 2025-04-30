@@ -9,7 +9,7 @@ SELECT
 	critical_level AS critical_deposition,
 	sensitive
 
-	FROM habitat_type_critical_levels
+	FROM nature.habitat_type_critical_levels
 
 	WHERE
 		substance_id = 1711
@@ -42,7 +42,7 @@ SELECT
 					assessment_area_id,
 					goal_habitat_type_id
 
-					FROM habitat_properties
+					FROM nature.habitat_properties
 
 					WHERE NOT (quality_goal = 'none' AND extent_goal = 'none')
 
@@ -53,7 +53,7 @@ SELECT
 					assessment_area_id,
 					goal_habitat_type_id
 
-					FROM species_to_habitats
+					FROM nature.species_to_habitats
 
 				UNION
 
@@ -63,19 +63,19 @@ SELECT
 						assessment_area_id,
 						goal_habitat_type_id
 
-						FROM relevant_habitats
-							INNER JOIN habitat_type_relations USING (habitat_type_id)
+						FROM nature.relevant_habitats
+							INNER JOIN nature.habitat_type_relations USING (habitat_type_id)
 
 				) AS all_designated
 
-				INNER JOIN habitat_type_relations USING (goal_habitat_type_id)
-				INNER JOIN habitat_type_critical_depositions_view USING (habitat_type_id)
+				INNER JOIN nature.habitat_type_relations USING (goal_habitat_type_id)
+				INNER JOIN nature.habitat_type_critical_depositions_view USING (habitat_type_id)
 
 			GROUP BY assessment_area_id, goal_habitat_type_id
 
 		) AS designated
 
-		INNER JOIN habitat_types ON (habitat_types.habitat_type_id = designated.goal_habitat_type_id)
+		INNER JOIN nature.habitat_types ON (habitat_types.habitat_type_id = designated.goal_habitat_type_id)
 
 	WHERE sensitive IS TRUE
 ;
@@ -90,25 +90,25 @@ SELECT
 CREATE OR REPLACE VIEW critical_deposition_areas_view AS
 SELECT
 	assessment_area_id,
-	'habitat'::critical_deposition_area_type AS type,
+	'habitat'::nature.critical_deposition_area_type AS type,
 	habitat_type_id AS critical_deposition_area_id,
 	name,
 	description,
 	FALSE AS relevant, -- These are NOT the relevant_habitats
 	geometry
 
-	FROM habitats
-		INNER JOIN habitat_types USING (habitat_type_id)
+	FROM nature.habitats
+		INNER JOIN nature.habitat_types USING (habitat_type_id)
 UNION ALL
 SELECT
 	assessment_area_id,
-	'relevant_habitat'::critical_deposition_area_type AS type,
+	'relevant_habitat'::nature.critical_deposition_area_type AS type,
 	habitat_type_id AS critical_deposition_area_id,
 	name,
 	description,
 	TRUE AS relevant, -- These are the relevant_habitats
 	geometry
 
-	FROM relevant_habitats
-		INNER JOIN habitat_types USING (habitat_type_id)
+	FROM nature.relevant_habitats
+		INNER JOIN nature.habitat_types USING (habitat_type_id)
 ;

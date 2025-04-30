@@ -63,5 +63,5 @@ SELECT
 	WHERE type = 'relevant_habitat'
 ;
 
-CREATE UNIQUE INDEX idx_receptors_to_relevant_habitats_ids ON receptors_to_relevant_habitats (assessment_area_id, critical_deposition_area_id, receptor_id);
+CREATE UNIQUE INDEX idx_receptors_to_relevant_habitats_ids ON receptors_to_relevant_habitats (assessment_area_id, habitat_type_id, receptor_id);
 CREATE INDEX idx_receptors_to_relevant_habitats ON receptors_to_relevant_habitats (receptor_id);

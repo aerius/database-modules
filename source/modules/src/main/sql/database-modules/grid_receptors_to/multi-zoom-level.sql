@@ -51,6 +51,7 @@ CREATE INDEX idx_receptors_to_critical_deposition_areas ON receptors_to_critical
  * ------------------------------
  * Materialized view linking relevant habitats and hexagons (by receptor_id).
  *
+ * @column cartographic_surface Surface for which the coverage is taken into account alongside the intersection of hexagon and critical deposition area.
  */
 CREATE MATERIALIZED VIEW receptors_to_relevant_habitats AS
 SELECT 
@@ -59,7 +60,8 @@ SELECT
 	receptor_id,
 	zoom_level,
 	surface,
-	receptor_habitat_coverage
+	receptor_habitat_coverage,
+	surface * receptor_habitat_coverage AS cartographic_surface
 	
 	FROM grid.receptors_to_critical_deposition_areas
 	

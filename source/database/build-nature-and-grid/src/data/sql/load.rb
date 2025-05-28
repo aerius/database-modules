@@ -2,7 +2,7 @@ add_build_constants
 
 cluster_tables
 
-run_sql "load_dataset_25.sql"
+run_sql "load_dataset_24.sql"
 run_sql "build_and_store.sql"
 
 synchronize_serials

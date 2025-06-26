@@ -66,7 +66,7 @@ SELECT
  * the habitat area should also be 'definitief', or at least 1 of the species in the habitat should be 'definitief'.
  * When the directive area is in the design ('ontwerp') status, then the habitats or species are not required to be 'definitief'.
  */
-CREATE OR REPLACE VIEW nature.build_relevant_habitat_areas_view AS
+CREATE OR REPLACE VIEW build_relevant_habitat_areas_view AS
 WITH natura2000_directive_area_properties AS (
 	SELECT
 		natura2000_directive_area_id,

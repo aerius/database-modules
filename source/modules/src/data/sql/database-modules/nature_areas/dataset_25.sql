@@ -5,4 +5,4 @@ BEGIN; SELECT system.load_table('natura2000_areas', '{data_folder}/common/nature
 BEGIN; SELECT system.load_table('natura2000_area_properties', '{data_folder}/common/nature_areas/25/nature.natura2000_area_properties_20250425.txt'); COMMIT;
 
 BEGIN; SELECT system.load_table('natura2000_directives', '{data_folder}/common/nature_areas/25/nature.natura2000_directives_20220328.txt'); COMMIT;
-BEGIN; SELECT system.load_table('natura2000_directive_areas', '{data_folder}/common/nature_areas/25/nature.natura2000_directive_areas_20250425.txt'); COMMIT;
+BEGIN; SELECT system.load_table('natura2000_directive_areas', '{data_folder}/common/nature_areas/25/nature.natura2000_directive_areas_20250702.txt'); COMMIT;

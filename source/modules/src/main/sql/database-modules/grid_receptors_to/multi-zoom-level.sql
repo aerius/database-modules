@@ -56,11 +56,9 @@ CREATE INDEX idx_receptors_to_critical_deposition_areas ON receptors_to_critical
 CREATE MATERIALIZED VIEW receptors_to_relevant_habitats AS
 SELECT 
 	assessment_area_id, 
-	critical_deposition_area_id AS habitat_type_id, 
+	critical_deposition_area_id, 
 	receptor_id,
 	zoom_level,
-	surface,
-	receptor_habitat_coverage,
 	surface * receptor_habitat_coverage AS cartographic_surface
 	
 	FROM grid.receptors_to_critical_deposition_areas
@@ -68,5 +66,5 @@ SELECT
 	WHERE type = 'relevant_habitat'
 ;
 
-CREATE UNIQUE INDEX idx_receptors_to_relevant_habitats_ids ON receptors_to_relevant_habitats (assessment_area_id, habitat_type_id, receptor_id, zoom_level);
+CREATE UNIQUE INDEX idx_receptors_to_relevant_habitats_ids ON receptors_to_relevant_habitats (assessment_area_id, critical_deposition_area_id, receptor_id, zoom_level);
 CREATE INDEX idx_receptors_to_relevant_habitats ON receptors_to_relevant_habitats (receptor_id);

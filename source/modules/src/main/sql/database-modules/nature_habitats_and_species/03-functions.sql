@@ -10,12 +10,10 @@
 CREATE OR REPLACE FUNCTION ae_critical_deposition_classification(critical_deposition posreal)
 	RETURNS text AS
 $BODY$
-BEGIN
 	SELECT (SELECT CASE 
 		WHEN (critical_deposition < 1400) THEN 'high_sensitivity'::critical_deposition_classification
 		WHEN (critical_deposition >= 2400) THEN 'low_sensitivity'::critical_deposition_classification
 		ELSE 'normal_sensitivity'::critical_deposition_classification
 	END CASE)::text;
-END;
 $BODY$
 LANGUAGE sql IMMUTABLE;

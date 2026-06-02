@@ -257,7 +257,7 @@ BEGIN
 			return_receptor_id [6] = receptor_id + (radius + t)     * number_of_hexagons_in_a_row + floor((radius - t) / 2.0);
 
 			FOR i IN 1..6 LOOP
-				IF (return_receptor_id[i] >= 0 AND return_receptor_id[i] <= receptor_id_max) THEN
+				IF (return_receptor_id[i] > 0 AND return_receptor_id[i] <= receptor_id_max) THEN
 					IF (i = 1) 	THEN IF (ceil(t / 2.0) < from_left) THEN RETURN NEXT return_receptor_id[i]; END IF;
 					ELSIF (i = 2)	THEN IF (ceil(radius / 2.0) < from_left) THEN RETURN NEXT return_receptor_id[i]; END IF;
 					ELSIF (i = 3) 	THEN IF (ceil((radius - t) / 2.0) < from_left) THEN RETURN NEXT return_receptor_id[i]; END IF;
@@ -278,7 +278,7 @@ BEGIN
 			return_receptor_id [6] = receptor_id + (radius + t)     * number_of_hexagons_in_a_row + ceil((radius - t) / 2.0);
 
 			FOR i IN 1..6 LOOP
-				IF (return_receptor_id[i] >= 0 AND return_receptor_id[i] <= receptor_id_max) THEN
+				IF (return_receptor_id[i] > 0 AND return_receptor_id[i] <= receptor_id_max) THEN
 					IF (i = 1) 	THEN IF (floor(t / 2.0) < from_left) THEN RETURN NEXT return_receptor_id[i]; END IF;
 					ELSIF (i = 2)	THEN IF (floor(radius / 2.0) < from_left) THEN RETURN NEXT return_receptor_id[i]; END IF;
 					ELSIF (i = 3) 	THEN IF (floor((radius - t) / 2.0) < from_left) THEN RETURN NEXT return_receptor_id[i]; END IF;

@@ -71,7 +71,7 @@ BEGIN
 		-- Because the set in tmp_calculated_receptor_ids is an ordered and distinct set of integers, the following holds: id(x+n) >= id(x) + n.
 		-- Furthermore when there are no "holes" in the set, the following holds: id(x+n) = id(x) + n. So we only need the first and last id in the set
 		-- and the number of id's.
-		PERFORM system.assert_equals(first_vertically_projected + number_of_distinct_rows - 1, last_vertically_projected, 'failed at receptor ' || receptor_id);
+		PERFORM system.assert_equals(first_vertically_projected + number_of_distinct_rows - 1, last_vertically_projected, 'failed at receptor ' || receptor_id || ', radius ' || radius);
 
 		DROP TABLE tmp_calculated_receptor_ids;
 

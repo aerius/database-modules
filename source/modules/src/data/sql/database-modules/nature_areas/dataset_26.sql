@@ -1,5 +1,5 @@
 BEGIN; SELECT system.load_table('countries', '{data_folder}/common/nature_areas/26/nature.countries_20150721.txt', FALSE); COMMIT;
-BEGIN; SELECT system.load_table('authorities', '{data_folder}/common/nature_areas/26/nature.authorities_20221115.txt'); COMMIT;
+BEGIN; SELECT system.load_table('authorities', '{data_folder}/common/nature_areas/26/nature.authorities_20260817.txt'); COMMIT;
 
 BEGIN; SELECT system.load_table('natura2000_areas', '{data_folder}/common/nature_areas/26/nature.natura2000_areas_20260511.txt'); COMMIT;
 BEGIN; SELECT system.load_table('natura2000_area_properties', '{data_folder}/common/nature_areas/26/nature.natura2000_area_properties_20260511.txt'); COMMIT;

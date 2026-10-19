@@ -63,6 +63,7 @@ SELECT
 	FROM receptors_to_critical_deposition_areas
 	
 	WHERE type = 'relevant_habitat'
+		AND is_robust_intersect IS TRUE
 ;
 
 CREATE UNIQUE INDEX idx_receptors_to_relevant_habitats_ids ON receptors_to_relevant_habitats (assessment_area_id, habitat_type_id, receptor_id);

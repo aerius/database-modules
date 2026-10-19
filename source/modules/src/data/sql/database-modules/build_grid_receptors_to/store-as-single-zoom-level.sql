@@ -25,7 +25,7 @@ SELECT system.store_query(
 		assessment_area_id,
 		surface
 
-		FROM receptors_to_assessment_areas
+		FROM receptors_to_assessment_areas_tolerance
 
 		WHERE is_robust_intersect IS TRUE
 
@@ -47,7 +47,7 @@ SELECT system.store_query(
 		surface,
 		receptor_habitat_coverage
 
-		FROM receptors_to_critical_deposition_areas
+		FROM receptors_to_critical_deposition_areas_tolerance
 
 		WHERE is_robust_intersect IS TRUE
 

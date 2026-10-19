@@ -1,5 +1,3 @@
-SELECT system.store_table('grid.receptors_to_assessment_areas', '{data_folder}/export/{tablename}_{datesuffix}.txt');
-
 SELECT system.store_query(
 	'grid.receptors_to_assessment_areas',
 	$$ SELECT
@@ -8,7 +6,7 @@ SELECT system.store_query(
 		zoom_level,
 		surface
 
-		FROM receptors_to_assessment_areas
+		FROM receptors_to_assessment_areas_tolerance
 
 		WHERE is_robust_intersect IS TRUE
 
@@ -21,8 +19,6 @@ SELECT system.store_query(
 );
 
 
-SELECT system.store_table('grid.receptors_to_critical_deposition_areas', '{data_folder}/export/{tablename}_{datesuffix}.txt');
-
 SELECT system.store_query(
 	'grid.receptors_to_critical_deposition_areas',
 	$$ SELECT
@@ -34,7 +30,7 @@ SELECT system.store_query(
 		surface,
 		receptor_habitat_coverage
 
-		FROM receptors_to_critical_deposition_areas
+		FROM receptors_to_critical_deposition_areas_tolerance
 
 		WHERE is_robust_intersect IS TRUE
 

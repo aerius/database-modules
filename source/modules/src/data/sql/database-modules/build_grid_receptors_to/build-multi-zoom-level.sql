@@ -6,7 +6,7 @@ SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofda
 	-- This is the only way I could find to make this code work.
 	SET search_path TO 'grid', 'public';
 
-	INSERT INTO receptors_to_assessment_areas (receptor_id, assessment_area_id, zoom_level, is_robust_intersect, surface)
+	INSERT INTO receptors_to_assessment_areas_tolerance (receptor_id, assessment_area_id, zoom_level, is_robust_intersect, surface)
 	SELECT
 		receptor_id,
 		assessment_area_id,
@@ -30,7 +30,7 @@ SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' ||
 	-- This is the only way I could find to make this code work.
 	SET search_path TO 'grid', 'public';
 
-	INSERT INTO receptors_to_critical_deposition_areas (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level, is_robust_intersect, surface, receptor_habitat_coverage)
+	INSERT INTO receptors_to_critical_deposition_areas_tolerance (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level, is_robust_intersect, surface, receptor_habitat_coverage)
 	SELECT
 		assessment_area_id,
 		type,

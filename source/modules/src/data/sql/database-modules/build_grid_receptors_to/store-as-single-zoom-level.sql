@@ -27,6 +27,8 @@ SELECT system.store_query(
 
 		FROM receptors_to_assessment_areas
 
+		WHERE is_robust_intersect IS TRUE
+
 		ORDER BY
 			receptor_id,
 			assessment_area_id,
@@ -46,6 +48,8 @@ SELECT system.store_query(
 		receptor_habitat_coverage
 
 		FROM receptors_to_critical_deposition_areas
+
+		WHERE is_robust_intersect IS TRUE
 
 		ORDER BY
 			assessment_area_id,

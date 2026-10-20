@@ -3,7 +3,7 @@
  * -------------------------------
  * Procedure to fill the relevant_habitat_areas table, based on habitat_areas.
  * The intersection between the habitat- and nature geometries is negatively buffered to introduce a geometric tolerance. After
- * the intersection, the resulting geometry is buffered back to the original width. A result of this action is that originally pointy or sharp shaped geometries are
+ * the intersection, the resulting geometry is buffered back to the original width. A result of this action is that originally pointy or sharp]geometries are
  * rounded.
  *
  * The following two situations are relevant:

@@ -27,7 +27,7 @@ CREATE INDEX idx_receptors_to_assessment_areas_assessment_area_id ON receptors_t
  * Table linking hexagons (by receptor_id), critical deposition areas and assessment areas (mostly natura2000 areas) with the intersected surface
  * and corresponding coverage of that critical deposition area.
  *
- * @column is_robust_intersect Boolean if the corresponding receptor is also present in the set which is determined with the tolerance-buffer. This column
+ * adjustme@column is_robust_intersect Boolean if the corresponding receptor is also present in the set which is determined with the tolerance-buffer. This column
  * is only present in the nature-grid build. The data is exported with the filter IS TRUE on this column and imported in the regular Monitor-build in the 
  * original version of this table, so without the "_tolerance" addition.
  * @column surface Area of the intersection of the hexagon and the critical deposition area.

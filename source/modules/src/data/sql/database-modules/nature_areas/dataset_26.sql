@@ -6,7 +6,3 @@ BEGIN; SELECT system.load_table('natura2000_area_properties', '{data_folder}/com
 
 BEGIN; SELECT system.load_table('natura2000_directives', '{data_folder}/common/nature_areas/26/nature.natura2000_directives_20220328.txt'); COMMIT;
 BEGIN; SELECT system.load_table('natura2000_directive_areas', '{data_folder}/common/nature_areas/26/nature.natura2000_directive_areas_20260511.txt'); COMMIT;
-
-
--- Fill column geometry_buffered in assessment_areas
-UPDATE assessment_areas SET geometry_buffered = ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric);

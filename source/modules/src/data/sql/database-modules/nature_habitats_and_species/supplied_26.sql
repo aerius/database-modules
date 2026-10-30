@@ -10,7 +10,3 @@ BEGIN; SELECT system.load_table('species_properties', '{data_folder}/common/natu
 BEGIN; SELECT system.load_table('designated_species', '{data_folder}/common/nature_habitats_and_species/26/nature.designated_species_20260430.txt'); COMMIT;
 
 BEGIN; SELECT system.load_table('species_to_habitats', '{data_folder}/common/nature_habitats_and_species/26/nature.species_to_habitats_20260512.txt'); COMMIT;
-
-
--- Fill geometry_buffered column in habitat_areas.
-UPDATE habitat_areas SET geometry_buffered = ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric);

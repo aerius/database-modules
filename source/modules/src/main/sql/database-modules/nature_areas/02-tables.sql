@@ -42,15 +42,14 @@ CREATE TABLE authorities (
  * 1..10000 = N2000 areas (in natura2000_areas) (1000+ = abroad)
  * 10001..20000 = N2000 directive areas (in natura2000_directive_areas)
  */
-CREATE TABLE assessment_areas
-(
+CREATE TABLE assessment_areas (
 	assessment_area_id integer NOT NULL,
 	type assessment_area_type NOT NULL,
 	name text NOT NULL,
 	code text NOT NULL,
 	authority_id integer NOT NULL,
 	geometry geometry(MultiPolygon),
-	geometry_buffered geometry(MultiPolygon) NULL
+	geometry_buffered geometry(MultiPolygon) GENERATED ALWAYS AS (ae_get_buffered_geometry(geometry)) STORED,
 
 	CONSTRAINT assessment_areas_pkey PRIMARY KEY (assessment_area_id),
 	CONSTRAINT assessment_areas_fkey_authorities FOREIGN KEY (authority_id) REFERENCES authorities,
@@ -71,8 +70,7 @@ CREATE INDEX idx_assessment_areas_name ON assessment_areas (name);
  * In the case of NL: the natura2000_area_id matches the official Natura 2000 area numbers as used in the netherlands.
  * In the case of UK: this table contains the nature sites.
  */
-CREATE TABLE natura2000_areas
-(
+CREATE TABLE natura2000_areas (
 	natura2000_area_id integer NOT NULL,
 
 	CONSTRAINT natura2000_areas_pkey PRIMARY KEY (natura2000_area_id)
@@ -81,6 +79,7 @@ CREATE TABLE natura2000_areas
 
 CREATE UNIQUE INDEX idx_natura2000_areas_assessment_area_id ON natura2000_areas (assessment_area_id);
 CREATE INDEX idx_natura2000_areas_geometry_gist ON natura2000_areas USING GIST (geometry);
+CREATE INDEX idx_natura2000_areas_geometry_buffered_gist ON natura2000_areas USING GIST (geometry_buffered);
 CREATE INDEX idx_natura2000_areas_name ON natura2000_areas (name);
 
 
@@ -110,8 +109,7 @@ CREATE TABLE natura2000_area_properties (
  * Each directive specifies if it is a habitat directive and/or a species directive.
  * This influences in what way an area will be incorporated when it comes to relevant habitat areas.
  */
-CREATE TABLE natura2000_directives
-(
+CREATE TABLE natura2000_directives (
 	natura2000_directive_id integer NOT NULL,
 	directive_code text NOT NULL,
 	directive_name text NOT NULL,
@@ -128,8 +126,7 @@ CREATE TABLE natura2000_directives
  * --------------------------
  * Table containing the sections of the nature sites (natura2000 areas) with their own directive(s).
  */
-CREATE TABLE natura2000_directive_areas
-(
+CREATE TABLE natura2000_directive_areas (
 	natura2000_directive_area_id integer NOT NULL,
 	natura2000_area_id integer NOT NULL,
 	natura2000_directive_id integer NOT NULL,
@@ -142,4 +139,5 @@ CREATE TABLE natura2000_directive_areas
 
 CREATE UNIQUE INDEX idx_natura2000_directive_areas_assessment_area_id ON natura2000_directive_areas (assessment_area_id);
 CREATE INDEX idx_natura2000_directive_areas_geometry_gist ON natura2000_directive_areas USING GIST (geometry);
+CREATE INDEX idx_natura2000_directive_areas_geometry_buffered_gist ON natura2000_directive_areas USING GIST (geometry_buffered);
 CREATE INDEX idx_natura2000_directive_areas_name ON natura2000_directive_areas (name);

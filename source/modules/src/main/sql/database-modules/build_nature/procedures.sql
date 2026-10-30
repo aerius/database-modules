@@ -35,7 +35,7 @@ BEGIN
 			species_directive,
 			habitat_directive,
 			design_status AS natura2000_directive_area_design_status,
-			ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric) AS geometry_buffered
+			geometry_buffered
 	
 			FROM nature.natura2000_directive_areas
 				INNER JOIN nature.natura2000_directives USING (natura2000_directive_id)
@@ -48,7 +48,7 @@ BEGIN
 			habitat_area_id,
 			habitat_type_id,
 			coverage,
-			ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric) AS geometry_buffered
+			geometry_buffered
 			
 			FROM nature.habitat_areas
 	

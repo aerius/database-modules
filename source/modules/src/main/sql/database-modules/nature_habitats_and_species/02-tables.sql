@@ -87,12 +87,14 @@ CREATE TABLE habitat_areas
 	habitat_type_id integer NOT NULL,
 	coverage fraction NOT NULL,
 	geometry geometry(MultiPolygon),
+	geometry_buffered geometry(MultiPolygon) NULL,
 
 	CONSTRAINT habitat_areas_pkey PRIMARY KEY (habitat_area_id),
 	CONSTRAINT habitat_areas_fkey_habitat_types FOREIGN KEY (habitat_type_id) REFERENCES habitat_types
 );
 
 CREATE INDEX idx_habitat_areas_geometry_gist ON habitat_areas USING GIST (geometry);
+CREATE INDEX idx_habitat_areas_geometry_buffered_gist ON habitat_areas USING GIST (geometry_buffered);
 CREATE INDEX idx_habitat_areas_assessment_area_id ON habitat_areas (assessment_area_id);
 CREATE INDEX idx_habitat_areas_habitat_type_id ON habitat_areas (habitat_type_id);
 

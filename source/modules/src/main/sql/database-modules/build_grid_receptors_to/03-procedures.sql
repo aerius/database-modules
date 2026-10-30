@@ -36,8 +36,8 @@ BEGIN
 			assessment_area_id,
 			type,
 			critical_deposition_area_id,
-			(ae_determine_hexagon_intersections(ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric))).receptor_id,
-			(ae_determine_hexagon_intersections(ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric))).zoom_level
+			(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
+			(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
 			
 			FROM nature.critical_deposition_areas_view
 
@@ -51,9 +51,7 @@ BEGIN
 		critical_deposition_area_id,
 		original.receptor_id,
 		zoom_level,
-		CASE WHEN reduced.receptor_id IS NOT NULL AND original.zoom_level = reduced.zoom_level THEN TRUE
-			WHEN reduced.receptor_id IS NULL THEN FALSE
-		ELSE NULL END AS is_robust_intersect,
+		reduced.receptor_id IS NOT NULL AS is_robust_intersect,
 		surface,
 		ae_determine_habitat_coverage_on_hexagon(assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level::integer) AS receptor_habitat_coverage
 	

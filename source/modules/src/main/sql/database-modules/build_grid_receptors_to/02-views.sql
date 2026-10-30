@@ -17,8 +17,8 @@ WITH n2k_original AS (
 ), n2k_reduced AS (
 	SELECT
 		assessment_area_id,
-		(ae_determine_hexagon_intersections(ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric))).receptor_id,
-		(ae_determine_hexagon_intersections(ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric))).zoom_level
+		(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
+		(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
 
 		FROM nature.assessment_areas
 
@@ -27,9 +27,7 @@ WITH n2k_original AS (
 SELECT
 	assessment_area_id,
 	original.receptor_id,
-	CASE WHEN reduced.receptor_id IS NOT NULL AND original.zoom_level = reduced.zoom_level THEN TRUE
-		WHEN reduced.receptor_id IS NULL THEN FALSE
-	ELSE NULL END AS is_robust_intersect,
+	reduced.receptor_id IS NOT NULL AS is_robust_intersect,
 	zoom_level,
 	surface
 

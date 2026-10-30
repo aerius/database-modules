@@ -50,6 +50,7 @@ CREATE TABLE assessment_areas
 	code text NOT NULL,
 	authority_id integer NOT NULL,
 	geometry geometry(MultiPolygon),
+	geometry_buffered geometry(MultiPolygon) NULL
 
 	CONSTRAINT assessment_areas_pkey PRIMARY KEY (assessment_area_id),
 	CONSTRAINT assessment_areas_fkey_authorities FOREIGN KEY (authority_id) REFERENCES authorities,
@@ -57,6 +58,7 @@ CREATE TABLE assessment_areas
 );
 
 CREATE INDEX idx_assessment_areas_geometry_gist ON assessment_areas USING GIST (geometry);
+CREATE INDEX idx_assessment_areas_geometry_buffered_gist ON assessment_areas USING GIST (geometry_buffered);
 CREATE INDEX idx_assessment_areas_name ON assessment_areas (name);
 
 

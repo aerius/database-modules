@@ -26,7 +26,7 @@ BEGIN
 			(ae_determine_hexagon_intersections(geometry)).surface,
 			(ae_determine_hexagon_intersections(geometry)).zoom_level
 	
-			FROM nature.critical_deposition_areas_view
+			FROM nature.critical_deposition_areas
 
 			WHERE 
 				assessment_area_id = $$ || v_assessment_area_id || $$
@@ -39,7 +39,7 @@ BEGIN
 			(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
 			(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
 			
-			FROM nature.critical_deposition_areas_view
+			FROM nature.critical_deposition_areas
 
 			WHERE 
 				assessment_area_id = $$ || v_assessment_area_id || $$

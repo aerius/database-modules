@@ -202,3 +202,28 @@ CREATE TABLE species_to_habitats
 	CONSTRAINT species_to_habitats_fkey_assessment_areas FOREIGN KEY (assessment_area_id) REFERENCES natura2000_areas (assessment_area_id), -- Currently limited to N2000. Can't reference base table 'assessment_areas'.
 	CONSTRAINT species_to_habitats_fkey_habitat_types FOREIGN KEY (goal_habitat_type_id) REFERENCES habitat_types (habitat_type_id)
 );
+
+
+/*
+ * critical_deposition_areas
+ * -------------------------
+ * Table with the critical deposition areas with associated type, critical deposition value, and whether or not they are designated.
+ * This includes both the set of all habitat areas and the set of relevant habitat areas. 
+ * Also contains a negatively buffered geometry column, which is used for the tolerance-implementation.
+ */
+CREATE TABLE critical_deposition_areas (
+	assessment_area_id integer NOT NULL,
+	type critical_deposition_area_type NOT NULL,
+	critical_deposition_area_id integer NOT NULL,
+	name text NOT NULL,
+	description text NOT NULL,
+	relevant boolean NOT NULL,
+	geometry geometry(MultiPolygon),
+	geometry_buffered geometry(Multipolygon),
+
+	CONSTRAINT critical_deposition_areas_pkey PRIMARY KEY (assessment_area_id, type, critical_deposition_area_id),
+	CONSTRAINT critical_deposition_areas_fkey_assessment_areas FOREIGN KEY (assessment_area_id) REFERENCES natura2000_areas (assessment_area_id)
+);
+
+CREATE INDEX idx_critical_deposition_areas_geometry_gist ON critical_deposition_areas USING GIST (geometry);
+CREATE INDEX idx_critical_deposition_areas_geometry_buffered_gist ON critical_deposition_areas USING GIST (geometry_buffered);

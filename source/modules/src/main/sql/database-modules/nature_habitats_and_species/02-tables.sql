@@ -3,8 +3,7 @@
  * -------------
  * Table containing the habitat types, identified by the name column and with an additional description.
  */
-CREATE TABLE habitat_types
-(
+CREATE TABLE habitat_types (
 	habitat_type_id integer NOT NULL,
 	name text NOT NULL,
 	description text NOT NULL,
@@ -62,8 +61,7 @@ CREATE TABLE habitat_properties (
  * This parent-child relation is kept in this table.
  * A habitat type can only have 1 goal habitat type. Most habitat types have themselves as the goal habitat type.
  */
-CREATE TABLE habitat_type_relations
-(
+CREATE TABLE habitat_type_relations (
 	habitat_type_id integer NOT NULL UNIQUE,
 	goal_habitat_type_id integer NOT NULL,
 
@@ -80,8 +78,7 @@ CREATE TABLE habitat_type_relations
  *
  * @column coverage The coverage of the habitat over the area (Dekkingsgraad). This factor is used to determine the cartographic surface.
  */
-CREATE TABLE habitat_areas
-(
+CREATE TABLE habitat_areas (
 	assessment_area_id integer NOT NULL,
 	habitat_area_id integer NOT NULL,
 	habitat_type_id integer NOT NULL,
@@ -109,8 +106,7 @@ CREATE INDEX idx_habitat_areas_habitat_type_id ON habitat_areas (habitat_type_id
  * 
  * @column coverage Coverage of the whole habitat area, equal to {@link habitat_areas}.
  */
-CREATE TABLE relevant_habitat_areas
-(
+CREATE TABLE relevant_habitat_areas (
 	assessment_area_id integer NOT NULL,
 	habitat_area_id integer NOT NULL,
 	habitat_type_id integer NOT NULL,
@@ -133,8 +129,7 @@ CREATE INDEX idx_relevant_habitat_areas_habitat_type_id ON relevant_habitat_area
  * This can be habitat species, breeding bird species and non breeding bird species.
  * A bird species can be present as both breeding and non-breeding in this table, as for some areas it is considered breeding while for others it is not.
  */
-CREATE TABLE species
-(
+CREATE TABLE species (
 	species_id integer NOT NULL,
 	name text NOT NULL,
 	description text NOT NULL,
@@ -175,8 +170,7 @@ CREATE TABLE species_properties (
  * ------------------
  * Table containing designated species per assessment areas.
  */
-CREATE TABLE designated_species
-(
+CREATE TABLE designated_species (
 	species_id integer NOT NULL,
 	assessment_area_id integer NOT NULL,
 
@@ -191,8 +185,7 @@ CREATE TABLE designated_species
  * -------------------
  * Table containing the species that can be present in a habitat type.
  */
-CREATE TABLE species_to_habitats
-(
+CREATE TABLE species_to_habitats (
 	species_id integer NOT NULL,
 	assessment_area_id integer NOT NULL,
 	goal_habitat_type_id integer NOT NULL,

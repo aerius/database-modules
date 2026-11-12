@@ -27,9 +27,3 @@ INSERT INTO system.constants (key, value) VALUES ('CALCULATOR_GRID_BOUNDARY_BOX'
  * The zoom-levels for which deposition results are available.
  */
 INSERT INTO system.constants (key, value) VALUES ('RESULT_ZOOM_LEVELS', '1');
-
-
-/**
- * The tolerance for the intersections between habitats, assessment_areas and hexagons. Is only used in the grid-nature build.
- */
-INSERT INTO system.constants (key, value) VALUES ('INTERSECTION_TOLERANCE', -0.05);

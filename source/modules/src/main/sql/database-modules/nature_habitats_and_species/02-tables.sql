@@ -84,7 +84,7 @@ CREATE TABLE habitat_areas (
 	habitat_type_id integer NOT NULL,
 	coverage fraction NOT NULL,
 	geometry geometry(MultiPolygon),
-	geometry_buffered geometry(MultiPolygon) GENERATED ALWAYS AS (ae_get_buffered_geometry(geometry)) STORED,
+	geometry_buffered geometry(MultiPolygon) GENERATED ALWAYS AS (system.ae_get_buffered_geometry(geometry)) STORED,
 	
 	CONSTRAINT habitat_areas_pkey PRIMARY KEY (habitat_area_id),
 	CONSTRAINT habitat_areas_fkey_habitat_types FOREIGN KEY (habitat_type_id) REFERENCES habitat_types

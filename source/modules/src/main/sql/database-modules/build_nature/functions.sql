@@ -1,7 +1,7 @@
 /*
- * pr_build_relevant_habitat_areas
+ * ae_build_relevant_habitat_areas
  * -------------------------------
- * Procedure to fill the relevant_habitat_areas table, based on habitat_areas.
+ * Function to fill the relevant_habitat_areas table, based on habitat_areas.
  * The intersection between the habitat- and nature geometries is negatively buffered to introduce a geometric tolerance. After
  * the intersection, the resulting geometry is buffered back to the original width. A result of this action is that originally pointy or sharp]geometries are
  * rounded.
@@ -17,17 +17,10 @@
  * the habitat area should also be 'definitief', or at least 1 of the species in the habitat should be 'definitief'.
  * When the directive area is in the design ('ontwerp') status, then the habitats or species are not required to be 'definitief'.
  */
-CREATE OR REPLACE PROCEDURE pr_build_relevant_habitat_areas(v_assessment_area_id integer)
-LANGUAGE 'plpgsql'
+CREATE OR REPLACE FUNCTION ae_build_relevant_habitat_areas(v_assessment_area_id integer)
+	RETURNS TABLE (assessment_area_id integer, habitat_area_id integer, habitat_type_id integer, coverage fraction, geometry geometry(MultiPolygon))
 AS $BODY$
 
-BEGIN
-
-	RAISE NOTICE 'Appending data to relevant_habitat_areas data table for assessment_area_id = %, @ %', v_assessment_area_id, timeofday();	
-
-	EXECUTE $$
-	INSERT INTO nature.relevant_habitat_areas (assessment_area_id, habitat_area_id, habitat_type_id, coverage, geometry)
-	
 	WITH natura2000_directive_area_properties AS (
 		SELECT
 			natura2000_directive_area_id,
@@ -36,12 +29,12 @@ BEGIN
 			habitat_directive,
 			design_status AS natura2000_directive_area_design_status,
 			geometry_buffered
-	
+
 			FROM nature.natura2000_directive_areas
 				INNER JOIN nature.natura2000_directives USING (natura2000_directive_id)
 				INNER JOIN nature.natura2000_area_properties USING (natura2000_area_id)
-	
-			WHERE natura2000_area_id = $$ || v_assessment_area_id || $$
+
+			WHERE natura2000_area_id = v_assessment_area_id
 	), habitat_area_buffered AS (
 		SELECT
 			assessment_area_id,
@@ -51,8 +44,8 @@ BEGIN
 			geometry_buffered
 			
 			FROM nature.habitat_areas
-	
-			WHERE assessment_area_id = $$ || v_assessment_area_id || $$
+
+			WHERE assessment_area_id = v_assessment_area_id
 	)
 	SELECT * FROM 
 		(SELECT
@@ -63,7 +56,7 @@ BEGIN
 			ST_Buffer(
 				ST_CollectionExtract(ST_Multi(ST_Union(ST_Intersection(natura2000_directive_area_geometry, habitat_area_geometry))), 3)
 				, -(system.constant('INTERSECTION_TOLERANCE')::numeric)) AS geometry
-	
+
 			FROM
 				-- Nitrogen-sensitive designated habitat (or H9999) within a HR-area, with the correct design status
 				(SELECT
@@ -74,7 +67,7 @@ BEGIN
 					coverage,
 					natura2000_directive_area_properties.geometry_buffered AS natura2000_directive_area_geometry,
 					habitat_area_buffered.geometry_buffered AS habitat_area_geometry
-	
+
 					FROM habitat_area_buffered
 						INNER JOIN nature.habitat_types USING (habitat_type_id)
 						INNER JOIN nature.habitat_type_sensitivity_view USING (habitat_type_id)
@@ -82,7 +75,7 @@ BEGIN
 						INNER JOIN nature.habitat_type_relations USING (habitat_type_id)
 						LEFT JOIN nature.habitat_properties USING (goal_habitat_type_id, assessment_area_id)
 						LEFT JOIN nature.designated_habitats_view USING (habitat_type_id, assessment_area_id)
-	
+
 					WHERE
 						sensitive IS TRUE
 						AND habitat_directive IS TRUE
@@ -93,7 +86,7 @@ BEGIN
 							OR habitat_types.name ILIKE 'H9999%')
 						
 				UNION
-	
+
 				-- Designated habitat or bird species within a nitrogen sensitve habitat area, within a habitat or species directive area, with the correct design status
 				SELECT
 					assessment_area_id,
@@ -103,30 +96,27 @@ BEGIN
 					coverage,
 					natura2000_directive_area_properties.geometry_buffered AS natura2000_directive_area_geometry,
 					habitat_area_buffered.geometry_buffered AS habitat_area_geometry
-	
+
 					FROM habitat_area_buffered
 						INNER JOIN nature.habitat_type_sensitivity_view USING (habitat_type_id)
 						INNER JOIN natura2000_directive_area_properties USING (assessment_area_id)
 						INNER JOIN nature.designated_species_to_habitats_view USING (assessment_area_id, habitat_type_id)
 						INNER JOIN nature.species USING (species_id)
 						INNER JOIN nature.species_properties USING (species_id, assessment_area_id)
-	
+
 					WHERE
 						sensitive IS TRUE
 						AND ((species_type IN ('breeding_bird_species', 'non_breeding_bird_species') AND species_directive IS TRUE)
 							OR (species_type = 'habitat_species' AND habitat_directive IS TRUE))
 						AND (natura2000_directive_area_design_status = 'ontwerp'
 							OR (natura2000_directive_area_design_status = 'definitief' AND species_properties.design_status = 'definitief'))
-	
+
 				) AS relevant_habitats
-	
+
 			GROUP BY assessment_area_id, habitat_area_id, habitat_type_id, coverage
 		) AS relevant_habitat_areas
-	
+
 		WHERE NOT ST_IsEmpty(geometry)
 	;
-	$$;
-
-COMMIT;
-END;
-$BODY$;
+$BODY$
+LANGUAGE sql VOLATILE;

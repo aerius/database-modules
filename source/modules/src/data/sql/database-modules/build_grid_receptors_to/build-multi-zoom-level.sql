@@ -31,7 +31,7 @@ SELECT system.raise_notice('Build: critical_deposition_areas @ ' || timeofday())
 	SET search_path TO 'grid', 'nature', 'public';
 	INSERT INTO critical_deposition_areas 
 		(assessment_area_id, type, critical_deposition_area_id, name, description, relevant, geometry, geometry_buffered)
-	SELECT * FROM ae_build_critical_deposition_areas({assessment_area_id});
+	SELECT * FROM build_critical_deposition_areas_view WHERE assessment_area_id = {assessment_area_id};
 
 {/multithread}
 

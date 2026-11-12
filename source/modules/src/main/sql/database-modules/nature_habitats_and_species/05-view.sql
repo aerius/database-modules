@@ -79,3 +79,38 @@ SELECT
 
 	WHERE sensitive IS TRUE
 ;
+
+
+/*
+ * build_critical_deposition_areas_view
+ * ------------------------------------
+ * View to collect the critical deposition areas with associated type, critical deposition value, and whether or not they are designated.
+ * This includes both the set of all habitat areas and the set of relevant habitat areas.
+ */
+CREATE OR REPLACE VIEW build_critical_deposition_areas_view AS
+SELECT
+	assessment_area_id,
+	'habitat'::public.critical_deposition_area_type AS type,
+	habitat_type_id AS critical_deposition_area_id,
+	name,
+	description,
+	FALSE AS relevant, -- These are NOT the relevant_habitats
+	geometry,
+	ST_buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric)
+
+	FROM habitats
+		INNER JOIN habitat_types USING (habitat_type_id)
+UNION ALL
+SELECT
+	assessment_area_id,
+	'relevant_habitat'::public.critical_deposition_area_type AS type,
+	habitat_type_id AS critical_deposition_area_id,
+	name,
+	description,
+	TRUE AS relevant, -- These are the relevant_habitats
+	geometry,
+	ST_buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric)
+
+	FROM relevant_habitats
+		INNER JOIN habitat_types USING (habitat_type_id)
+;

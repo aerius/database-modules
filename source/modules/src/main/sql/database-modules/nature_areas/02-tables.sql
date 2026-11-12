@@ -49,7 +49,7 @@ CREATE TABLE assessment_areas (
 	code text NOT NULL,
 	authority_id integer NOT NULL,
 	geometry geometry(MultiPolygon),
-	geometry_buffered geometry(MultiPolygon) GENERATED ALWAYS AS (ae_get_buffered_geometry(geometry)) STORED,
+	geometry_buffered geometry(MultiPolygon) GENERATED ALWAYS AS (system.ae_get_buffered_geometry(geometry)) STORED,
 
 	CONSTRAINT assessment_areas_pkey PRIMARY KEY (assessment_area_id),
 	CONSTRAINT assessment_areas_fkey_authorities FOREIGN KEY (authority_id) REFERENCES authorities,

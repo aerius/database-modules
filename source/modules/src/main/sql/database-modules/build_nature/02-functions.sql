@@ -18,10 +18,10 @@
  * When the directive area is in the design ('ontwerp') status, then the habitats or species are not required to be 'definitief'.
  */
 CREATE OR REPLACE FUNCTION ae_build_relevant_habitat_areas(v_assessment_area_id integer)
-	RETURNS TABLE (assessment_area_id integer, habitat_area_id integer, habitat_type_id integer, coverage fraction, geometry geometry(MultiPolygon))
-AS $BODY$
-
-	WITH natura2000_directive_area_properties AS (
+	RETURNS TABLE (assessment_area_id integer, habitat_area_id integer, habitat_type_id integer, coverage fraction, geometry geometry(MultiPolygon)) AS
+$BODY$
+	WITH 
+	natura2000_directive_area_properties AS (
 		SELECT
 			natura2000_directive_area_id,
 			natura2000_area_id AS assessment_area_id,

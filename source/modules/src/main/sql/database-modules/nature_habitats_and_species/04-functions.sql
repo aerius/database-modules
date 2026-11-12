@@ -25,9 +25,8 @@ LANGUAGE sql IMMUTABLE;
  * Function to fill the critical_deposition_areas table.
  */
 CREATE OR REPLACE FUNCTION ae_build_critical_deposition_areas(v_assessment_area_id integer)
-	RETURNS TABLE (assessment_area_id integer, type public.critical_deposition_area_type, critical_deposition_area_id integer, name text, description text, relevant boolean, geometry geometry(MultiPolygon), geometry_buffered geometry(MultiPolygon) )
-AS $BODY$
-
+	RETURNS TABLE (assessment_area_id integer, type public.critical_deposition_area_type, critical_deposition_area_id integer, name text, description text, relevant boolean, geometry geometry(MultiPolygon), geometry_buffered geometry(MultiPolygon)) AS 
+$BODY$
 	SELECT
 		assessment_area_id,
 		'habitat'::public.critical_deposition_area_type AS type,

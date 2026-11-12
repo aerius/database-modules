@@ -18,7 +18,7 @@ CREATE TABLE receptors_to_assessment_areas_tolerance (
 	CONSTRAINT receptors_to_assessment_areas_tolerance_fkey_receptors FOREIGN KEY (receptor_id) REFERENCES receptors
 );
 
-CREATE INDEX idx_receptors_to_assessment_areas_assessment_area_id ON receptors_to_assessment_areas_tolerance (assessment_area_id);
+CREATE INDEX idx_receptors_to_assessment_areas_tolerance_assessment_area_id ON receptors_to_assessment_areas_tolerance (assessment_area_id);
 
 
 /*
@@ -49,4 +49,4 @@ CREATE TABLE receptors_to_critical_deposition_areas_tolerance (
 	CONSTRAINT receptors_to_critical_deposition_tolerance_areas_fkey_receptors FOREIGN KEY (receptor_id) REFERENCES receptors
 );
 
-CREATE INDEX idx_receptors_to_critical_deposition_areas ON receptors_to_critical_deposition_areas_tolerance (receptor_id);
+CREATE INDEX idx_receptors_to_critical_deposition_areas_tolerance_receptor_id ON receptors_to_critical_deposition_areas_tolerance (receptor_id);

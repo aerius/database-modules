@@ -1,7 +1,3 @@
 -- Refresh all materialized views
 BEGIN; REFRESH MATERIALIZED VIEW habitats; COMMIT;
 BEGIN; REFRESH MATERIALIZED VIEW relevant_habitats; COMMIT;
-/* uitremmen; worden niet gebruikt?
-BEGIN; REFRESH MATERIALIZED VIEW relevant_goal_habitats; COMMIT;
-BEGIN; REFRESH MATERIALIZED VIEW relevant_species; COMMIT;
-*/

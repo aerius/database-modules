@@ -29,7 +29,9 @@ SELECT system.raise_notice('Build: critical_deposition_areas @ ' || timeofday())
 	-- For the executed multi thread code execution the import_common_into_schema search path schema is not set.
 	-- This is the only way I could find to make this code work.
 	SET search_path TO 'grid', 'nature', 'public';
-	CALL pr_build_critical_deposition_areas({assessment_area_id});
+	INSERT INTO critical_deposition_areas 
+		(assessment_area_id, type, critical_deposition_area_id, name, description, relevant, geometry, geometry_buffered)
+	SELECT * FROM ae_build_critical_deposition_areas({assessment_area_id})
 
 {/multithread}
 

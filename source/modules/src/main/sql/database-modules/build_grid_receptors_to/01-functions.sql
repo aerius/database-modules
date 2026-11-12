@@ -79,7 +79,7 @@ LANGUAGE sql VOLATILE;
  */
 CREATE OR REPLACE FUNCTION ae_determine_habitat_coverage_on_hexagon(v_assessment_area_id integer, v_type public.critical_deposition_area_type, v_habitat_type_id integer, v_receptor_id integer, v_zoom_level integer)
 	RETURNS fraction AS
-$BODY$
+
 	WITH hexagon AS (SELECT geometry FROM hexagons WHERE receptor_id = v_receptor_id AND zoom_level = v_zoom_level)
 	SELECT
 		system.weighted_avg(coverage::numeric, ST_Area(ST_Intersection(habitat_areas.geometry, hexagon.geometry))::numeric)::fraction
@@ -105,3 +105,60 @@ $BODY$
 	;
 $BODY$
 LANGUAGE SQL STABLE;
+
+
+/*
+ * ae_build_receptors_to_critical_deposition_areas_tolerance
+ * ---------------------------------------------------------
+ * Function to fill the ae_build_receptors_to_critical_deposition_areas_tolerance table.
+ *
+ * The coverage of the habitat on each receptor is calculated by looking at the intersection of the habitat areas that intersect the receptor.
+ * See {@link ae_determine_habitat_coverage_on_hexagon} for the calculation method.
+ */
+CREATE OR REPLACE FUNCTION ae_build_receptors_to_critical_deposition_areas_tolerance(v_assessment_area_id integer, v_critical_deposition_area_type text)
+	RETURNS TABLE (assessment_area_id integer, type critical_deposition_area_type, critical_deposition_area_id integer, receptor_id integer, zoom_level smallint, is_robust_intersect boolean, surface posnum, receptor_habitat_coverage posnum)
+AS $BODY$
+
+WITH habitat_original AS (
+	SELECT
+		assessment_area_id,
+		type,
+		critical_deposition_area_id,
+		(ae_determine_hexagon_intersections(geometry)).receptor_id,
+		(ae_determine_hexagon_intersections(geometry)).surface,
+		(ae_determine_hexagon_intersections(geometry)).zoom_level
+
+		FROM nature.critical_deposition_areas
+
+		WHERE 
+			assessment_area_id = v_assessment_area_id
+			AND type::text = v_critical_deposition_area_type
+	), habitat_reduced AS (
+		SELECT
+			assessment_area_id,
+			type,
+			critical_deposition_area_id,
+			(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
+			(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
+			
+			FROM nature.critical_deposition_areas
+
+			WHERE 
+				assessment_area_id = v_assessment_area_id
+				AND type::text = v_critical_deposition_area_type
+	)
+	SELECT
+		assessment_area_id,
+		type,
+		critical_deposition_area_id,
+		original.receptor_id,
+		zoom_level,
+		reduced.receptor_id IS NOT NULL AS is_robust_intersect,
+		surface,
+		ae_determine_habitat_coverage_on_hexagon(assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level::integer) AS receptor_habitat_coverage
+
+		FROM habitat_original AS original
+			LEFT JOIN habitat_reduced AS reduced USING (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level)
+	;
+$BODY$
+LANGUAGE sql VOLATILE;

@@ -31,7 +31,7 @@ SELECT system.raise_notice('Build: critical_deposition_areas @ ' || timeofday())
 	SET search_path TO 'grid', 'nature', 'public';
 	INSERT INTO critical_deposition_areas 
 		(assessment_area_id, type, critical_deposition_area_id, name, description, relevant, geometry, geometry_buffered)
-	SELECT * FROM critical_deposition_areas_view WHERE assessment_area_id = {assessment_area_id};
+	SELECT * FROM build_critical_deposition_areas_view WHERE assessment_area_id = {assessment_area_id};
 
 {/multithread}
 
@@ -45,6 +45,7 @@ SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' ||
 	SET search_path TO 'grid', 'public';
 	INSERT INTO receptors_to_critical_deposition_areas_tolerance 
 		(assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level, is_robust_intersect, surface, receptor_habitat_coverage)
-	SELECT * FROM ae_build_receptors_to_critical_deposition_areas_tolerance({assessment_area_id}, '{critical_deposition_area_type}');
+	SELECT * FROM build_receptors_to_critical_deposition_areas_view 
+		WHERE assessment_area_id = {assessment_area_id} AND type = '{critical_deposition_area_type}';
 
 {/multithread}

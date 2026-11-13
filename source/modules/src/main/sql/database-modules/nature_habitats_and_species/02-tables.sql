@@ -3,8 +3,7 @@
  * -------------
  * Table containing the habitat types, identified by the name column and with an additional description.
  */
-CREATE TABLE habitat_types
-(
+CREATE TABLE habitat_types (
 	habitat_type_id integer NOT NULL,
 	name text NOT NULL,
 	description text NOT NULL,
@@ -62,8 +61,7 @@ CREATE TABLE habitat_properties (
  * This parent-child relation is kept in this table.
  * A habitat type can only have 1 goal habitat type. Most habitat types have themselves as the goal habitat type.
  */
-CREATE TABLE habitat_type_relations
-(
+CREATE TABLE habitat_type_relations (
 	habitat_type_id integer NOT NULL UNIQUE,
 	goal_habitat_type_id integer NOT NULL,
 
@@ -80,14 +78,13 @@ CREATE TABLE habitat_type_relations
  *
  * @column coverage The coverage of the habitat over the area (Dekkingsgraad). This factor is used to determine the cartographic surface.
  */
-CREATE TABLE habitat_areas
-(
+CREATE TABLE habitat_areas (
 	assessment_area_id integer NOT NULL,
 	habitat_area_id integer NOT NULL,
 	habitat_type_id integer NOT NULL,
 	coverage fraction NOT NULL,
 	geometry geometry(MultiPolygon),
-
+	
 	CONSTRAINT habitat_areas_pkey PRIMARY KEY (habitat_area_id),
 	CONSTRAINT habitat_areas_fkey_habitat_types FOREIGN KEY (habitat_type_id) REFERENCES habitat_types
 );
@@ -107,8 +104,7 @@ CREATE INDEX idx_habitat_areas_habitat_type_id ON habitat_areas (habitat_type_id
  * 
  * @column coverage Coverage of the whole habitat area, equal to {@link habitat_areas}.
  */
-CREATE TABLE relevant_habitat_areas
-(
+CREATE TABLE relevant_habitat_areas (
 	assessment_area_id integer NOT NULL,
 	habitat_area_id integer NOT NULL,
 	habitat_type_id integer NOT NULL,
@@ -131,8 +127,7 @@ CREATE INDEX idx_relevant_habitat_areas_habitat_type_id ON relevant_habitat_area
  * This can be habitat species, breeding bird species and non breeding bird species.
  * A bird species can be present as both breeding and non-breeding in this table, as for some areas it is considered breeding while for others it is not.
  */
-CREATE TABLE species
-(
+CREATE TABLE species (
 	species_id integer NOT NULL,
 	name text NOT NULL,
 	description text NOT NULL,
@@ -173,8 +168,7 @@ CREATE TABLE species_properties (
  * ------------------
  * Table containing designated species per assessment areas.
  */
-CREATE TABLE designated_species
-(
+CREATE TABLE designated_species (
 	species_id integer NOT NULL,
 	assessment_area_id integer NOT NULL,
 
@@ -189,8 +183,7 @@ CREATE TABLE designated_species
  * -------------------
  * Table containing the species that can be present in a habitat type.
  */
-CREATE TABLE species_to_habitats
-(
+CREATE TABLE species_to_habitats (
 	species_id integer NOT NULL,
 	assessment_area_id integer NOT NULL,
 	goal_habitat_type_id integer NOT NULL,
@@ -200,3 +193,28 @@ CREATE TABLE species_to_habitats
 	CONSTRAINT species_to_habitats_fkey_assessment_areas FOREIGN KEY (assessment_area_id) REFERENCES natura2000_areas (assessment_area_id), -- Currently limited to N2000. Can't reference base table 'assessment_areas'.
 	CONSTRAINT species_to_habitats_fkey_habitat_types FOREIGN KEY (goal_habitat_type_id) REFERENCES habitat_types (habitat_type_id)
 );
+
+
+/*
+ * critical_deposition_areas
+ * -------------------------
+ * Table with the critical deposition areas with associated type, critical deposition value, and whether or not they are designated.
+ * This includes both the set of all habitat areas and the set of relevant habitat areas. 
+ * Also contains a negatively buffered geometry column, which is used for the tolerance-implementation.
+ */
+CREATE TABLE critical_deposition_areas (
+	assessment_area_id integer NOT NULL,
+	type critical_deposition_area_type NOT NULL,
+	critical_deposition_area_id integer NOT NULL,
+	name text NOT NULL,
+	description text NOT NULL,
+	relevant boolean NOT NULL,
+	geometry geometry(MultiPolygon),
+	geometry_buffered geometry(Multipolygon),
+
+	CONSTRAINT critical_deposition_areas_pkey PRIMARY KEY (assessment_area_id, type, critical_deposition_area_id),
+	CONSTRAINT critical_deposition_areas_fkey_assessment_areas FOREIGN KEY (assessment_area_id) REFERENCES natura2000_areas (assessment_area_id)
+);
+
+CREATE INDEX idx_critical_deposition_areas_geometry_gist ON critical_deposition_areas USING GIST (geometry);
+CREATE INDEX idx_critical_deposition_areas_geometry_buffered_gist ON critical_deposition_areas USING GIST (geometry_buffered);

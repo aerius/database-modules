@@ -4,13 +4,12 @@
  * Table linking receptors and assessment areas (mostly natura2000 areas) with the intersected surface.
  * The link is determined based on the hexagon at zoom level 1 corresponding to the receptor.
  */
-CREATE TABLE receptors_to_assessment_areas
-(
+CREATE TABLE receptors_to_assessment_areas (
 	receptor_id integer NOT NULL,
 	assessment_area_id integer NOT NULL,
 	zoom_level smallint NOT NULL,
 	surface posnum NOT NULL,
-
+	
 	CONSTRAINT receptors_to_assessment_areas_pkey PRIMARY KEY (receptor_id, assessment_area_id, zoom_level),
 	CONSTRAINT receptors_to_assessment_areas_fkey_receptors FOREIGN KEY (receptor_id) REFERENCES receptors
 );
@@ -29,8 +28,7 @@ CREATE INDEX idx_receptors_to_assessment_areas_assessment_area_id ON receptors_t
  * The coverage of all (relevant) habitat types that intersect with the hexagon is weighted according to the intersection surface, and averaged.
  * By multiplying the receptor_habitat_coverage value with the surface value, a valid cartographic surface is determined for this combination of receptor and critical deposition area.
  */
-CREATE TABLE receptors_to_critical_deposition_areas
-(
+CREATE TABLE receptors_to_critical_deposition_areas (
 	assessment_area_id integer NOT NULL,
 	type public.critical_deposition_area_type NOT NULL,
 	critical_deposition_area_id integer NOT NULL,

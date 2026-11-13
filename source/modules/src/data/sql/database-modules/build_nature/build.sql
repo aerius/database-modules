@@ -1,6 +1,9 @@
 --
 -- habitats and species
 --
+--  Refresh buffered materialized view for habitat_areas
+BEGIN; REFRESH MATERIALIZED VIEW habitat_areas_buffered; COMMIT;
+
 SELECT system.raise_notice('Build: relevant_habitat_areas @ ' || timeofday());
 {multithread on: SELECT assessment_area_id FROM nature.assessment_areas WHERE type = 'natura2000_area' ORDER BY assessment_area_id}
 

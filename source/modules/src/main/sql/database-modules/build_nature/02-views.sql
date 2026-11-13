@@ -80,7 +80,7 @@ WITH
 			design_status AS natura2000_directive_area_design_status,
 			geometry_buffered
 
-			FROM nature.natura2000_directive_areas
+			FROM natura2000_directive_areas_buffered
 				INNER JOIN nature.natura2000_directives USING (natura2000_directive_id)
 				INNER JOIN nature.natura2000_area_properties USING (natura2000_area_id)
 	)
@@ -103,9 +103,9 @@ WITH
 					natura2000_directive_area_id,
 					coverage,
 					natura2000_directive_area_properties.geometry_buffered AS natura2000_directive_area_geometry,
-					habitat_areas.geometry_buffered AS habitat_area_geometry
+					habitat_areas_buffered.geometry_buffered AS habitat_area_geometry
 
-					FROM nature.habitat_areas
+					FROM nature.habitat_areas_buffered
 						INNER JOIN nature.habitat_types USING (habitat_type_id)
 						INNER JOIN nature.habitat_type_sensitivity_view USING (habitat_type_id)
 						INNER JOIN natura2000_directive_area_properties USING (assessment_area_id)
@@ -132,9 +132,9 @@ WITH
 					natura2000_directive_area_id,
 					coverage,
 					natura2000_directive_area_properties.geometry_buffered AS natura2000_directive_area_geometry,
-					habitat_areas.geometry_buffered AS habitat_area_geometry
+					habitat_areas_buffered.geometry_buffered AS habitat_area_geometry
 
-					FROM nature.habitat_areas
+					FROM nature.habitat_areas_buffered
 						INNER JOIN nature.habitat_type_sensitivity_view USING (habitat_type_id)
 						INNER JOIN natura2000_directive_area_properties USING (assessment_area_id)
 						INNER JOIN nature.designated_species_to_habitats_view USING (assessment_area_id, habitat_type_id)

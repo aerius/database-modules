@@ -19,9 +19,9 @@ SELECT
 		(ae_determine_hexagon_intersections(geometry)).zoom_level,
 		(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id AS receptor_reduced
 
-		FROM nature.assessment_areas
+		FROM nature.assessment_areas_buffered
 
-		WHERE assessment_areas.type = 'natura2000_area'
+		WHERE type = 'natura2000_area'
 	) AS mapping_receptor_cda
 ;
 

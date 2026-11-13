@@ -1,3 +1,9 @@
+-- Refresh buffered materialized views correlated to assessment_areas
+SET search_path TO 'nature', 'public';
+BEGIN; REFRESH MATERIALIZED VIEW assessment_areas_buffered; COMMIT;
+BEGIN; REFRESH MATERIALIZED VIEW natura2000_directive_areas_buffered; COMMIT;
+
+
 SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofday());
 
 {multithread on: SELECT assessment_area_id FROM nature.assessment_areas WHERE type = 'natura2000_area' ORDER BY assessment_area_id}

@@ -49,7 +49,6 @@ CREATE TABLE assessment_areas (
 	code text NOT NULL,
 	authority_id integer NOT NULL,
 	geometry geometry(MultiPolygon),
-	geometry_buffered geometry(MultiPolygon) GENERATED ALWAYS AS (system.ae_get_buffered_geometry(geometry)) STORED,
 
 	CONSTRAINT assessment_areas_pkey PRIMARY KEY (assessment_area_id),
 	CONSTRAINT assessment_areas_fkey_authorities FOREIGN KEY (authority_id) REFERENCES authorities,
@@ -57,7 +56,6 @@ CREATE TABLE assessment_areas (
 );
 
 CREATE INDEX idx_assessment_areas_geometry_gist ON assessment_areas USING GIST (geometry);
-CREATE INDEX idx_assessment_areas_geometry_buffered_gist ON assessment_areas USING GIST (geometry_buffered);
 CREATE INDEX idx_assessment_areas_name ON assessment_areas (name);
 
 
@@ -79,7 +77,6 @@ CREATE TABLE natura2000_areas (
 
 CREATE UNIQUE INDEX idx_natura2000_areas_assessment_area_id ON natura2000_areas (assessment_area_id);
 CREATE INDEX idx_natura2000_areas_geometry_gist ON natura2000_areas USING GIST (geometry);
-CREATE INDEX idx_natura2000_areas_geometry_buffered_gist ON natura2000_areas USING GIST (geometry_buffered);
 CREATE INDEX idx_natura2000_areas_name ON natura2000_areas (name);
 
 
@@ -139,5 +136,4 @@ CREATE TABLE natura2000_directive_areas (
 
 CREATE UNIQUE INDEX idx_natura2000_directive_areas_assessment_area_id ON natura2000_directive_areas (assessment_area_id);
 CREATE INDEX idx_natura2000_directive_areas_geometry_gist ON natura2000_directive_areas USING GIST (geometry);
-CREATE INDEX idx_natura2000_directive_areas_geometry_buffered_gist ON natura2000_directive_areas USING GIST (geometry_buffered);
 CREATE INDEX idx_natura2000_directive_areas_name ON natura2000_directive_areas (name);

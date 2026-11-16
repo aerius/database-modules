@@ -1,7 +1,8 @@
 --
 -- habitats and species
 --
---  Refresh buffered materialized view for habitat_areas
+--  Refresh buffered materialized views
+BEGIN; REFRESH MATERIALIZED VIEW natura2000_directive_areas_buffered; COMMIT;
 BEGIN; REFRESH MATERIALIZED VIEW habitat_areas_buffered; COMMIT;
 
 SELECT system.raise_notice('Build: relevant_habitat_areas @ ' || timeofday());

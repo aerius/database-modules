@@ -1,7 +1,6 @@
 -- Refresh buffered materialized views correlated to assessment_areas
 SET search_path TO 'nature', 'public';
 BEGIN; REFRESH MATERIALIZED VIEW assessment_areas_buffered; COMMIT;
-BEGIN; REFRESH MATERIALIZED VIEW natura2000_directive_areas_buffered; COMMIT;
 BEGIN; REFRESH MATERIALIZED VIEW critical_deposition_areas_buffered; COMMIT;
 
 

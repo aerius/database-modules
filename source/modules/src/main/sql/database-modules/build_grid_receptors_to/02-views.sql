@@ -31,6 +31,7 @@ SELECT
 	critical_deposition_area_id,
 	receptor_id,
 	zoom_level,
+	receptor_reduced IS NOT NULL AS is_robust_intersect,
 	surface,
 	ae_determine_habitat_coverage_on_hexagon(assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level::integer) AS receptor_habitat_coverage
 
@@ -41,8 +42,9 @@ SELECT
 		critical_deposition_area_id,
 		(ae_determine_hexagon_intersections(geometry)).receptor_id,
 		(ae_determine_hexagon_intersections(geometry)).surface,
-		(ae_determine_hexagon_intersections(geometry)).zoom_level
+		(ae_determine_hexagon_intersections(geometry)).zoom_level,
+		(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id AS receptor_reduced
 
-		FROM nature.critical_deposition_areas_view
+		FROM nature.critical_deposition_areas_buffered
 	) AS mapping_receptor_cda
 ;

@@ -35,7 +35,7 @@ SELECT
 	FROM natura2000_directive_areas
 ;
 
-CREATE UNIQUE INDEX	idx_natura2000_directive_areas_buffered ON natura2000_directive_areas_buffered (natura2000_area_id);
+CREATE UNIQUE INDEX	idx_natura2000_directive_areas_buffered ON natura2000_directive_areas_buffered (natura2000_area_id, natura2000_directive_area_id);
 CREATE INDEX idx_natura2000_directive_areas_buffered_geometry_buffered_gist ON natura2000_directive_areas_buffered USING GIST (geometry_buffered);
 
 
@@ -64,10 +64,12 @@ CREATE INDEX idx_habitat_areas_buffered_geometry_buffered_gist ON habitat_areas_
 
 
 /*
- * habitat_areas_buffered
- * ----------------------
- * Materialized view to return a subset of assessment_areas, extended with a geometry_buffered column which is used in the tolerance-implementation 
- * during the nature-grid build. In that part of the build, this materialized view is used instead of the parent-table habitat_areas.
+ * critical_deposition_areas_buffered
+ * ----------------------------------
+ * Materialized view which extends the original one (build_critical_deposition_areas_view) with the column "geometry_buffered". This column is used in the 
+ * intersection tolerance implementation for the nature-grid build.
+ * Description of the original view: View to collect the critical deposition areas with associated type, critical deposition value, and whether or not they are designated.
+ * This includes both the set of all habitat areas and the set of relevant habitat areas.
  */
 CREATE MATERIALIZED VIEW critical_deposition_areas_buffered AS
 SELECT

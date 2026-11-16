@@ -6,13 +6,23 @@
 CREATE OR REPLACE VIEW build_receptors_to_assessment_areas_view AS
 SELECT
 	assessment_area_id,
-	(ae_determine_hexagon_intersections(geometry)).receptor_id,
-	(ae_determine_hexagon_intersections(geometry)).zoom_level,
-	(ae_determine_hexagon_intersections(geometry)).surface
+	receptor_id,
+	receptor_reduced IS NOT NULL AS is_robust_intersect,
+	zoom_level,
+	surface
 
-	FROM nature.assessment_areas
+	FROM
+	(SELECT
+		assessment_area_id,
+		(ae_determine_hexagon_intersections(geometry)).receptor_id,
+		(ae_determine_hexagon_intersections(geometry)).surface,
+		(ae_determine_hexagon_intersections(geometry)).zoom_level,
+		(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id AS receptor_reduced
 
-	WHERE assessment_areas.type = 'natura2000_area'
+		FROM nature.assessment_areas_buffered
+
+		WHERE type = 'natura2000_area'
+	) AS mapping_receptor_cda
 ;
 
 

@@ -5,7 +5,6 @@ BEGIN; REFRESH MATERIALIZED VIEW assessment_areas_buffered; COMMIT;
 
 -- build
 SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofday());
-
 {multithread on: SELECT assessment_area_id FROM nature.assessment_areas WHERE type = 'natura2000_area' ORDER BY assessment_area_id}
 
 	-- For the executed multi thread code execution the import_common_into_schema search path schema is not set.
@@ -30,31 +29,22 @@ SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofda
 
 SELECT system.raise_notice('Build: critical_deposition_areas @ ' || timeofday());
 
-{multithread on: SELECT assessment_area_id FROM nature.assessment_areas where type = 'natura2000_area' ORDER BY assessment_area_id}
+SET search_path TO 'nature', 'public';
+INSERT INTO critical_deposition_areas_buffered (assessment_area_id, type, critical_deposition_area_id, name, description, relevant, geometry)
+SELECT 
+	assessment_area_id,
+	type,
+	critical_deposition_area_id,
+	name,
+	description,
+	relevant,
+	geometry 
 
-	-- For the executed multi thread code execution the import_common_into_schema search path schema is not set.
-	-- This is the only way I could find to make this code work.
-	SET search_path TO 'nature', 'public';
-	INSERT INTO critical_deposition_areas_buffered (assessment_area_id, type, critical_deposition_area_id, name, description, relevant, geometry)
-	SELECT 
-		assessment_area_id,
-		type,
-		critical_deposition_area_id,
-		name,
-		description,
-		relevant,
-		geometry 
-
-		FROM critical_deposition_areas_view 
-
-		WHERE assessment_area_id = {assessment_area_id}
-	;
-
-{/multithread}
+	FROM critical_deposition_areas_view 
+;
 
 
 SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' || timeofday());
-
 {multithread on: SELECT assessment_area_id, critical_deposition_area_type FROM nature.assessment_areas CROSS JOIN (SELECT unnest(enum_range(null::public.critical_deposition_area_type)) AS critical_deposition_area_type) AS types WHERE type = 'natura2000_area' ORDER BY assessment_area_id, critical_deposition_area_type }
 
 	-- For the executed multi thread code execution the import_common_into_schema search path schema is not set.

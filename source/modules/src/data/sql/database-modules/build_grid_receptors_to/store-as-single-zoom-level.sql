@@ -37,6 +37,7 @@ SELECT system.store_query(
 	'{data_folder}/export/{tablename}_{datesuffix}.txt'
 );
 
+
 SELECT system.store_query(
 	'grid.receptors_to_critical_deposition_areas',
 	$$ SELECT

@@ -1,8 +1,8 @@
 /*
  * critical_deposition_areas_buffered
  * ----------------------------------
- * Table which 
- Table with the critical deposition areas with associated type, critical deposition value, and whether or not they are designated.
+ * Table with the critical deposition areas with associated type, critical deposition value, and whether or not they are designated. 
+ * Is used exclusively in the nature-grid build and has an added geometry_buffered column, used in the tolerance implementation. 
  * This includes both the set of all habitat areas and the set of relevant habitat areas. 
  * Also contains a negatively buffered geometry column, which is used for the tolerance-implementation.
  */

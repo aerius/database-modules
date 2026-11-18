@@ -55,8 +55,8 @@ SELECT
  * ---------------------------------
  * View to fill the relevant_habitat_areas table, based on habitat_areas.
  * The intersection between the habitat- and nature geometries is negatively buffered to introduce a geometric tolerance. After
- * the intersection, the resulting geometry is buffered back to the original width. A result of this action is that originally pointy or sharp]geometries are
- * rounded.
+ * the intersection, the resulting geometry is buffered back to the original width, with an addotional parameter "join=mitre" for the ST_Buffer function.
+ * This parameter ensures that the original geometry is returned instead of rounded at the sharp edged as a standard ST_Buffer would return.
  *
  * The following two situations are relevant:
  * - Nitrogen sensitive designated habitat (or H9999) within a habitat directive area.
@@ -92,7 +92,7 @@ WITH
 			coverage,
 			ST_Buffer(
 				ST_CollectionExtract(ST_Multi(ST_Union(ST_Intersection(natura2000_directive_area_geometry, habitat_area_geometry))), 3)
-				, -(system.constant('INTERSECTION_TOLERANCE')::numeric)) AS geometry
+				, -system.constant('INTERSECTION_TOLERANCE')::numeric, 'join=mitre') AS geometry
 
 			FROM
 				-- Nitrogen-sensitive designated habitat (or H9999) within a HR-area, with the correct design status

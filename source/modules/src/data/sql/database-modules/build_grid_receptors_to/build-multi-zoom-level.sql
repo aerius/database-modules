@@ -27,6 +27,25 @@ SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofda
 {/multithread}
 
 
+-- Fill the original table with the data where tolerance has been taken into account
+INSERT INTO receptors_to_assessment_areas (receptor_id, assessment_area_id, zoom_level, surface)
+SELECT
+	receptor_id,
+	assessment_area_id,
+	zoom_level,
+	surface
+
+	FROM receptors_to_assessment_areas_tolerance
+
+	WHERE is_robust_intersect IS TRUE
+
+	ORDER BY
+		receptor_id,
+		assessment_area_id,
+		zoom_level
+;
+
+
 SELECT system.raise_notice('Build: critical_deposition_areas @ ' || timeofday());
 
 SET search_path TO 'nature', 'public';
@@ -69,3 +88,27 @@ SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' ||
 	;
 
 {/multithread}
+
+
+-- Fill the original table with the data where tolerance has been taken into account
+INSERT INTO receptors_to_critical_deposition_areas (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level, surface, receptor_habitat_coverage)
+SELECT
+	assessment_area_id,
+	type,
+	critical_deposition_area_id,
+	receptor_id,
+	zoom_level,
+	surface,
+	receptor_habitat_coverage
+
+	FROM receptors_to_critical_deposition_areas_tolerance
+
+	WHERE is_robust_intersect IS TRUE
+
+	ORDER BY
+		assessment_area_id,
+		type,
+		critical_deposition_area_id,
+		receptor_id,
+		zoom_level
+;

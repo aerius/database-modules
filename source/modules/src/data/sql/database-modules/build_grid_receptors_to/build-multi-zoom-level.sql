@@ -28,40 +28,43 @@ SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofda
 
 
 -- Fill the original table with the data where tolerance has been taken into account
-SET search_path TO 'grid', 'public';
-INSERT INTO receptors_to_assessment_areas (receptor_id, assessment_area_id, zoom_level, surface)
-SELECT
-	receptor_id,
-	assessment_area_id,
-	zoom_level,
-	surface
-
-	FROM receptors_to_assessment_areas_tolerance
-
-	WHERE is_robust_intersect IS TRUE
-
-	ORDER BY
+BEGIN;
+	SET search_path TO 'grid', 'public';
+	INSERT INTO receptors_to_assessment_areas (receptor_id, assessment_area_id, zoom_level, surface)
+	SELECT
 		receptor_id,
 		assessment_area_id,
-		zoom_level
-;
+		zoom_level,
+		surface
+
+		FROM receptors_to_assessment_areas_tolerance
+
+		WHERE is_robust_intersect IS TRUE
+
+		ORDER BY
+			receptor_id,
+			assessment_area_id,
+			zoom_level
+	;
+COMMIT;
 
 
 SELECT system.raise_notice('Build: critical_deposition_areas @ ' || timeofday());
+BEGIN;
+	SET search_path TO 'nature', 'public';
+	INSERT INTO critical_deposition_areas_buffered (assessment_area_id, type, critical_deposition_area_id, name, description, relevant, geometry)
+	SELECT 
+		assessment_area_id,
+		type,
+		critical_deposition_area_id,
+		name,
+		description,
+		relevant,
+		geometry 
 
-SET search_path TO 'nature', 'public';
-INSERT INTO critical_deposition_areas_buffered (assessment_area_id, type, critical_deposition_area_id, name, description, relevant, geometry)
-SELECT 
-	assessment_area_id,
-	type,
-	critical_deposition_area_id,
-	name,
-	description,
-	relevant,
-	geometry 
-
-	FROM critical_deposition_areas_view 
-;
+		FROM critical_deposition_areas_view 
+	;
+COMMIT;
 
 
 SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' || timeofday());
@@ -92,25 +95,27 @@ SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' ||
 
 
 -- Fill the original table with the data where tolerance has been taken into account
-SET search_path TO 'grid', 'public';
-INSERT INTO receptors_to_critical_deposition_areas (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level, surface, receptor_habitat_coverage)
-SELECT
-	assessment_area_id,
-	type,
-	critical_deposition_area_id,
-	receptor_id,
-	zoom_level,
-	surface,
-	receptor_habitat_coverage
-
-	FROM receptors_to_critical_deposition_areas_tolerance
-
-	WHERE is_robust_intersect IS TRUE
-
-	ORDER BY
+BEGIN;
+	SET search_path TO 'grid', 'public';
+	INSERT INTO receptors_to_critical_deposition_areas (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level, surface, receptor_habitat_coverage)
+	SELECT
 		assessment_area_id,
 		type,
 		critical_deposition_area_id,
 		receptor_id,
-		zoom_level
-;
+		zoom_level,
+		surface,
+		receptor_habitat_coverage
+
+		FROM receptors_to_critical_deposition_areas_tolerance
+
+		WHERE is_robust_intersect IS TRUE
+
+		ORDER BY
+			assessment_area_id,
+			type,
+			critical_deposition_area_id,
+			receptor_id,
+			zoom_level
+	;
+COMMIT;

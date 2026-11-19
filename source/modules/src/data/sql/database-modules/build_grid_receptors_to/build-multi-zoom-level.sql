@@ -19,7 +19,7 @@ SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofda
 		is_robust_intersect,
 		surface
 
-		FROM build_receptors_to_assessment_areas_view
+		FROM build_receptors_to_assessment_areas_tolerance_view
 		
 		WHERE assessment_area_id = {assessment_area_id}
 	;
@@ -60,7 +60,8 @@ BEGIN;
 		name,
 		description,
 		relevant,
-		geometry 
+		geometry,
+		ae_get_buffered_geometry(geometry)
 
 		FROM critical_deposition_areas_view 
 	;
@@ -84,7 +85,7 @@ SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' ||
 		surface,
 		receptor_habitat_coverage
 
-		FROM build_receptors_to_critical_deposition_areas_view 
+		FROM build_receptors_to_critical_deposition_areas_tolerance_view 
 		
 		WHERE 
 			assessment_area_id = {assessment_area_id}

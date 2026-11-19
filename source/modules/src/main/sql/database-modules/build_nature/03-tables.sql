@@ -14,7 +14,7 @@ CREATE TABLE critical_deposition_areas_buffered (
 	description text NOT NULL,
 	relevant boolean NOT NULL,
 	geometry geometry(MultiPolygon),
-	geometry_buffered geometry(Multipolygon) GENERATED ALWAYS AS (system.ae_get_buffered_geometry(geometry)) STORED,
+	geometry_buffered geometry(Multipolygon),
 
 	CONSTRAINT critical_deposition_areas_buffered_pkey PRIMARY KEY (assessment_area_id, type, critical_deposition_area_id),
 	CONSTRAINT critical_deposition_areas_buffered_fkey_assessment_areas FOREIGN KEY (assessment_area_id) REFERENCES natura2000_areas (assessment_area_id)

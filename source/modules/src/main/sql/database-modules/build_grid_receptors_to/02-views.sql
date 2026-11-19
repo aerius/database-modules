@@ -6,23 +6,32 @@
 CREATE OR REPLACE VIEW build_receptors_to_assessment_areas_view AS
 SELECT
 	assessment_area_id,
-	receptor_id,
-	receptor_reduced IS NOT NULL AS is_robust_intersect,
+	original.receptor_id,
+	reduced.receptor_id IS NOT NULL AS is_robust_intersect,
 	zoom_level,
 	surface
 
-	FROM
-	(SELECT
-		assessment_area_id,
-		(ae_determine_hexagon_intersections(geometry)).receptor_id,
-		(ae_determine_hexagon_intersections(geometry)).surface,
-		(ae_determine_hexagon_intersections(geometry)).zoom_level,
-		(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id AS receptor_reduced
-
-		FROM nature.assessment_areas_buffered
-
-		WHERE type = 'natura2000_area'
-	) AS mapping_receptor_cda
+	FROM 
+		(SELECT
+			assessment_area_id,
+			(ae_determine_hexagon_intersections(geometry)).receptor_id,
+			(ae_determine_hexagon_intersections(geometry)).surface,
+			(ae_determine_hexagon_intersections(geometry)).zoom_level
+			
+			FROM nature.assessment_areas_buffered
+			
+			WHERE assessment_areas_buffered.type = 'natura2000_area'
+		) AS original
+		LEFT JOIN 
+			(SELECT
+				assessment_area_id,
+				(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
+				(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
+				FROM nature.assessment_areas_buffered
+				
+				WHERE assessment_areas_buffered.type = 'natura2000_area'
+			) AS reduced
+		USING (assessment_area_id, receptor_id, zoom_level)
 ;
 
 
@@ -39,22 +48,31 @@ SELECT
 	assessment_area_id,
 	type,
 	critical_deposition_area_id,
-	receptor_id,
+	original.receptor_id,
 	zoom_level,
-	receptor_reduced IS NOT NULL AS is_robust_intersect,
+	reduced.receptor_id IS NOT NULL AS is_robust_intersect,
 	surface,
 	ae_determine_habitat_coverage_on_hexagon(assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level::integer) AS receptor_habitat_coverage
 
-	FROM
-	(SELECT
-		assessment_area_id,
-		type,
-		critical_deposition_area_id,
-		(ae_determine_hexagon_intersections(geometry)).receptor_id,
-		(ae_determine_hexagon_intersections(geometry)).surface,
-		(ae_determine_hexagon_intersections(geometry)).zoom_level,
-		(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id AS receptor_reduced
-
-		FROM nature.critical_deposition_areas_buffered
-	) AS mapping_receptor_cda
+	FROM 
+		(SELECT
+			assessment_area_id,
+			type,
+			critical_deposition_area_id,
+			(ae_determine_hexagon_intersections(geometry)).receptor_id,
+			(ae_determine_hexagon_intersections(geometry)).surface,
+			(ae_determine_hexagon_intersections(geometry)).zoom_level
+		
+			FROM nature.critical_deposition_areas_buffered
+		) AS original
+		LEFT JOIN 
+			(SELECT
+				assessment_area_id,
+				type,
+				critical_deposition_area_id,
+				(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
+				(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
+			FROM nature.critical_deposition_areas_buffered
+			) AS reduced
+		USING (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level)
 ;

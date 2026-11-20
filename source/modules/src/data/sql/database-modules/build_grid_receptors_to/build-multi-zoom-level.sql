@@ -1,11 +1,11 @@
--- Refresh buffered materialized views correlated to assessment_areas
+-- Refresh buffered materialized view
 SET search_path TO 'nature', 'public';
 BEGIN; REFRESH MATERIALIZED VIEW assessment_areas_buffered; COMMIT;
 
 
 -- build
 SELECT system.raise_notice('Build: receptors_to_assessment_areas @ ' || timeofday());
-{multithread on: SELECT assessment_area_id FROM nature.assessment_areas WHERE type = 'natura2000_area' ORDER BY assessment_area_id}
+{multithread on: SELECT assessment_area_id FROM nature.assessment_areas ORDER BY assessment_area_id}
 
 	-- For the executed multi thread code execution the import_common_into_schema search path schema is not set.
 	-- This is the only way I could find to make this code work.
@@ -61,7 +61,7 @@ BEGIN;
 		description,
 		relevant,
 		geometry,
-		ae_get_buffered_geometry(geometry)
+		ST_Buffer(geometry, system.constant('INTERSECTION_TOLERANCE')::numeric) AS geometry_buffered
 
 		FROM critical_deposition_areas_view 
 	;
@@ -69,7 +69,7 @@ COMMIT;
 
 
 SELECT system.raise_notice('Build: receptors_to_critical_deposition_areas @ ' || timeofday());
-{multithread on: SELECT assessment_area_id, critical_deposition_area_type FROM nature.assessment_areas CROSS JOIN (SELECT unnest(enum_range(null::public.critical_deposition_area_type)) AS critical_deposition_area_type) AS types WHERE type = 'natura2000_area' ORDER BY assessment_area_id, critical_deposition_area_type }
+{multithread on: SELECT assessment_area_id, critical_deposition_area_type FROM nature.assessment_areas CROSS JOIN (SELECT unnest(enum_range(null::public.critical_deposition_area_type)) AS critical_deposition_area_type) AS types ORDER BY assessment_area_id, critical_deposition_area_type }
 
 	-- For the executed multi thread code execution the import_common_into_schema search path schema is not set.
 	-- This is the only way I could find to make this code work.

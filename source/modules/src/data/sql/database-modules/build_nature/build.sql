@@ -6,7 +6,7 @@ BEGIN; REFRESH MATERIALIZED VIEW natura2000_directive_areas_buffered; COMMIT;
 BEGIN; REFRESH MATERIALIZED VIEW habitat_areas_buffered; COMMIT;
 
 SELECT system.raise_notice('Build: relevant_habitat_areas @ ' || timeofday());
-{multithread on: SELECT assessment_area_id FROM nature.assessment_areas WHERE type = 'natura2000_area' ORDER BY assessment_area_id}
+{multithread on: SELECT assessment_area_id FROM nature.assessment_areas ORDER BY assessment_area_id}
 
 	SET search_path TO 'grid', 'nature', 'public';
 	INSERT INTO relevant_habitat_areas (assessment_area_id, habitat_area_id, habitat_type_id, coverage, geometry)

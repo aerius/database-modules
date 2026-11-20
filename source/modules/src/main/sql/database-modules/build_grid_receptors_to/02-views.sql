@@ -18,18 +18,19 @@ SELECT
 			(ae_determine_hexagon_intersections(geometry)).surface,
 			(ae_determine_hexagon_intersections(geometry)).zoom_level
 			
-			FROM assessment_areas
+			FROM nature.assessment_areas
 			
-			WHERE assessment_areas_buffered.type = 'natura2000_area'
+			WHERE type = 'natura2000_area'
 		) AS original
 		LEFT JOIN 
 			(SELECT
 				assessment_area_id,
 				(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
 				(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
-				FROM assessment_areas_buffered
 				
-				WHERE assessment_areas_buffered.type = 'natura2000_area'
+				FROM nature.assessment_areas_buffered
+				
+				WHERE type = 'natura2000_area'
 			) AS reduced
 		USING (assessment_area_id, receptor_id, zoom_level)
 ;
@@ -63,7 +64,7 @@ SELECT
 			(ae_determine_hexagon_intersections(geometry)).surface,
 			(ae_determine_hexagon_intersections(geometry)).zoom_level
 		
-			FROM critical_deposition_areas
+			FROM nature.critical_deposition_areas_buffered
 		) AS original
 		LEFT JOIN 
 			(SELECT
@@ -72,7 +73,7 @@ SELECT
 				critical_deposition_area_id,
 				(ae_determine_hexagon_intersections(geometry_buffered)).receptor_id,
 				(ae_determine_hexagon_intersections(geometry_buffered)).zoom_level
-			FROM critical_deposition_areas_buffered
+			FROM nature.critical_deposition_areas_buffered
 			) AS reduced
 		USING (assessment_area_id, type, critical_deposition_area_id, receptor_id, zoom_level)
 ;
